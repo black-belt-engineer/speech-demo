@@ -1,5 +1,103 @@
 @import 'tailwindcss';
 
+html {
+  height: 100%;
+}
+body {
+  margin: 0;
+  min-height: 100%;
+  height: 100%;
+  min-width: 320px;
+}
+#root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  height: 100%;
+  width: 100%;
+}
+
+.video-slot {
+  position: relative;
+  width: 360px;
+  max-width: min(360px, calc(100vw - 2rem));
+  aspect-ratio: 9 / 16;
+  height: auto;
+  min-height: 0;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: #000;
+}
+@media (max-width: 400px) {
+  .video-slot {
+    width: 320px;
+    max-width: min(320px, calc(100vw - 2rem));
+  }
+}
+
+@keyframes video-state-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes video-state-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+.video-state {
+  transform-origin: center center;
+  transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+}
+.video-transition-out {
+  opacity: 0;
+  transform: scale(0.98);
+}
+.video-transition-in {
+  animation: video-state-in 0.35s ease-out forwards;
+}
+
+.video-slot video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mic-indicator {
+  min-width: 3.5rem;
+  min-height: 3.5rem;
+}
+.mic-pulse-ring {
+  border: 2px solid rgb(239 68 68);
+  animation: mic-pulse 1.2s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes mic-pulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -22,14 +120,6 @@ a {
 }
 a:hover {
   color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
 }
 
 h1 {
