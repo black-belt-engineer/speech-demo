@@ -1,75 +1,66 @@
-# React + TypeScript + Vite
+# Virtual Video Chat Simulator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + TypeScript web app that simulates a video chat with voice interaction. The app plays different video clips based on what you say, using the browser’s built-in speech recognition.
 
-Currently, two official plugins are available:
+## What it does
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Video states**: Idle → Greeting → Listening (with speech) → Response → back to Listening or Goodbye → Idle.
+- **Voice input**: Uses the [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API) (microphone required).
+- **Keyword responses**: Saying “hello”/“hi”, “weather”/“today”, “bye”/“goodbye”, or “easter” triggers different response videos; anything else uses a fallback.
+- **UI**: Single video player (no flicker when switching clips), mic indicator with pulse when you speak, and transcript of what you said.
 
-## React Compiler
+## Tech stack
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- **React 18** + **TypeScript**
+- **Vite** (dev server and build)
+- **Tailwind CSS** (styling)
 
-Note: This will impact Vite dev & build performances.
+## Prerequisites
 
-## Expanding the ESLint configuration
+- [Node.js](https://nodejs.org/) (v20.19+ or v22.12+ recommended for Vite 7)
+- A modern browser with Web Speech API support (e.g. Chrome, Edge)
+- Microphone access for voice input
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## How to run
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 1. Install dependencies
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Start the dev server
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+Then open the URL shown in the terminal (usually `http://localhost:5173`) in your browser.
+
+### 3. Use the app
+
+1. Allow microphone access when prompted.
+2. Click **Start Chat**.
+3. After the greeting video, speak when you see the mic indicator (e.g. try “hello”, “weather”, or “goodbye”).
+4. Response videos play based on what you said; say “goodbye” to end and return to idle.
+
+## Other commands
+
+| Command           | Description                |
+|------------------|----------------------------|
+| `npm run build`  | Production build to `dist/` |
+| `npm run preview`| Serve the production build |
+| `npm run lint`   | Run ESLint                 |
+| `npm run format` | Format code with Prettier  |
+
+## Project structure
+
+- `src/App.tsx` – Main app and wiring of video, chat state, and speech.
+- `src/components/` – `VideoPlayer` (single video, preload, transitions), `Controls` (Start Chat, mic indicator, transcript).
+- `src/state/useChatMachine.ts` – Chat state machine (idle, greeting, listening, response, goodbye).
+- `src/hooks/useSpeechRecognition.ts` – Web Speech API hook (listening, interim results, errors).
+- `src/utils/detectIntent.ts` – Maps spoken text to response video keys.
+- `src/constants/` – `chatState`, `speechStatus` (and video keys in `utils/detectIntent.ts`).
+- `src/assets/videos/` – Video files used for each state and response.
+
+Videos are preloaded so switching between clips is smooth and without black frames.
